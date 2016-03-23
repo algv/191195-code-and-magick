@@ -1,7 +1,7 @@
 # Личный проект «Код и Магия» [![Build status][travis-image]][travis-url] [![Dependency status][dependency-image]][dependency-url]
 
 * Студент: [Александр Гаврилов](https://up.htmlacademy.ru/javascript/4/user/191195).
-* Наставник: `Неизвестно`.
+* Наставник: [Сергей Ключковский](https://htmlacademy.ru/profile/id44700).
 
 ---
 
