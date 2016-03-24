@@ -1,6 +1,7 @@
 function getMessage(a, b) {
   var sum = 0;
   var length = 0;
+  var minLength = 0;
       
   if(typeof a === 'boolean') {
       if(a) {
@@ -17,17 +18,12 @@ function getMessage(a, b) {
   
   if(Array.isArray(a)) {
       if(Array.isArray(b)) {
-          if((a.length < b.length)){
-              for(var i = 0; i < a.length; i++){
-                  length += a[i] * b[i];
-              }
-          }
-          else{
-              for(var i = 0; i < b.length; i++){
-                  length += a[i] * b[i];	
-               }
-          }
+          minLength = Math.min(a.length, b.length);
           
+          for(var i = 0; i < minLength; i++){
+              length += a[i] * b[i];
+          }
+      
           return 'Я прошёл ' + length + ' метров';
       }
       
