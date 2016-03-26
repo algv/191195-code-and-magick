@@ -378,19 +378,124 @@
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
+      var me = this.state.objects.filter(function(object) {
+        return object.type === ObjectType.ME;
+      })[0];
+
+      /**
+       * Окно сообщения привязываем к положению персонажа.
+       */
+      var MessageBox = {
+        'LOWER_LEFT_POSITION': {
+          'x': me.x + me.width * 1.1,
+          'y': me.y + me.height / 2
+        },
+        'TOP_LEFT_POSITION': {
+          'x': me.x + me.width + 15,
+          'y': me.y - HEIGHT / 3
+        },
+        'TOP_RIGHT_POSITION': {
+          'x': me.x + WIDTH / 2,
+          'y': me.y - HEIGHT / 3
+        },
+        'LOWER_RIGHT_POSITION': {
+          'x': me.x + WIDTH / 2 - 15,
+          'y': me.y + me.height / 2
+        }
+      };
+
       switch (this.state.currentStatus) {
         case Verdict.WIN:
-          console.log('you have won!');
+          this._drawMessageBoxShadow(MessageBox, 10);
+          this._drawMessageBox(MessageBox);
+          this._writeTextOnMessageBox(MessageBox, 'Ты победилю Враг не пройдет!',
+           MessageBox.LOWER_RIGHT_POSITION.x - MessageBox.LOWER_LEFT_POSITION.x - 10);
           break;
         case Verdict.FAIL:
-          console.log('you have failed!');
+          this._drawMessageBoxShadow(MessageBox, 10);
+          this._drawMessageBox(MessageBox);
+          this._writeTextOnMessageBox(MessageBox, 'Странно, но в этот раз ты проиграл',
+           MessageBox.LOWER_RIGHT_POSITION.x - MessageBox.LOWER_LEFT_POSITION.x - 10);
           break;
         case Verdict.PAUSE:
-          console.log('game is on pause!');
+          this._drawMessageBoxShadow(MessageBox, 10);
+          this._drawMessageBox(MessageBox);
+          this._writeTextOnMessageBox(MessageBox, 'Игра на паузе, но ты всегда можешь продолжить (нажми пробел)',
+           MessageBox.LOWER_RIGHT_POSITION.x - MessageBox.LOWER_LEFT_POSITION.x - 10);
           break;
         case Verdict.INTRO:
-          console.log('welcome to the game! Press Space to start');
+          this._drawMessageBoxShadow(MessageBox, 10);
+          this._drawMessageBox(MessageBox);
+          this._writeTextOnMessageBox(MessageBox, 'Привет. Хоть я и не Супермен,'
+          + ' но тоже могу летать (по нажатию на стрелки).'
+          + ' А еще стреляю огненными шарами',
+           MessageBox.LOWER_RIGHT_POSITION.x - MessageBox.LOWER_LEFT_POSITION.x - 10);
           break;
+      }
+    },
+
+    /**
+     * Отрисовка окна сообщения персонажа.
+     */
+    _drawMessageBox: function(MessageBox) {
+      this.ctx.beginPath();
+      this.ctx.moveTo(MessageBox.LOWER_LEFT_POSITION.x, MessageBox.LOWER_LEFT_POSITION.y);
+      this.ctx.lineTo(MessageBox.TOP_LEFT_POSITION.x, MessageBox.TOP_LEFT_POSITION.y);
+      this.ctx.lineTo(MessageBox.TOP_RIGHT_POSITION.x, MessageBox.TOP_RIGHT_POSITION.y);
+      this.ctx.lineTo(MessageBox.LOWER_RIGHT_POSITION.x, MessageBox.LOWER_RIGHT_POSITION.y);
+      this.ctx.closePath();
+      this.ctx.fillStyle = '#FFFFFF';
+      this.ctx.fill();
+    },
+
+    /**
+     * Отрисовка тени для окна сообщения персонажа.
+     */
+    _drawMessageBoxShadow: function(MessageBox, shift) {
+      this.ctx.beginPath();
+      this.ctx.moveTo(MessageBox.LOWER_LEFT_POSITION.x + shift, MessageBox.LOWER_LEFT_POSITION.y + shift);
+      this.ctx.lineTo(MessageBox.TOP_LEFT_POSITION.x + shift, MessageBox.TOP_LEFT_POSITION.y + shift);
+      this.ctx.lineTo(MessageBox.TOP_RIGHT_POSITION.x + shift, MessageBox.TOP_RIGHT_POSITION.y + shift);
+      this.ctx.lineTo(MessageBox.LOWER_RIGHT_POSITION.x + shift, MessageBox.LOWER_RIGHT_POSITION.y + shift);
+      this.ctx.closePath();
+      this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+      this.ctx.fill();
+    },
+
+    /**
+     * отрисовка текста сообщения.
+     */
+    _writeTextOnMessageBox: function(MessageBox, textMessage, maxLineWidth) {
+      var textHeight = 16;
+      var arrayOfStrings = textMessage.split(' ');
+      var oneLine = '';
+      var arrayOfLines = [];
+      var curentTextPosition = {
+        'x': MessageBox.TOP_LEFT_POSITION.x + textHeight,
+        'y': MessageBox.TOP_LEFT_POSITION.y + textHeight * 2
+      };
+
+      this.ctx.font = '16px PT Mono';
+      this.ctx.baseLine = 'hanging';
+      this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+
+      for(var i = 0; i < arrayOfStrings.length; i++) {
+        var tempLine = '';
+        tempLine += arrayOfStrings[i] + ' ';
+        if(this.ctx.measureText(oneLine + tempLine).width < maxLineWidth) {
+          oneLine += tempLine;
+        } else {
+          i--;
+          arrayOfLines.push(oneLine);
+          oneLine = '';
+        }
+      }
+      arrayOfLines.push(oneLine);
+
+      for(i = 0; i < arrayOfLines.length; i++) {
+        this.ctx.fillText(arrayOfLines[i], curentTextPosition.x,
+           curentTextPosition.y);
+        curentTextPosition.y += textHeight;
       }
     },
 
