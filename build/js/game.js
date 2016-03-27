@@ -378,6 +378,28 @@
      * Отрисовка экрана паузы.
      */
     _drawPauseScreen: function() {
+      switch (this.state.currentStatus) {
+        case Verdict.WIN:
+          this._drawMessage('Ты победил. Враг не пройдет!');
+          break;
+        case Verdict.FAIL:
+          this._drawMessage('Странно, но в этот раз ты проиграл');
+          break;
+        case Verdict.PAUSE:
+          this._drawMessage('Игра на паузе, но ты всегда можешь продолжить (нажми пробел)');
+          break;
+        case Verdict.INTRO:
+          this._drawMessage('Привет. Хоть я и не Супермен,'
+          + ' но тоже могу летать (по нажатию на стрелки).'
+          + ' А еще стреляю огненными шарами');
+          break;
+      }
+    },
+
+    /**
+     * Отрисовка окна сообщения персонажа.
+     */
+    _drawMessage: function(textMessage) {
       var me = this.state.objects.filter(function(object) {
         return object.type === ObjectType.ME;
       })[0];
@@ -404,34 +426,11 @@
         }
       };
 
-      switch (this.state.currentStatus) {
-        case Verdict.WIN:
-          this._drawMessageBoxShadow(MessageBox, 10);
-          this._drawMessageBox(MessageBox);
-          this._writeTextOnMessageBox(MessageBox, 'Ты победилю Враг не пройдет!',
-           MessageBox.LOWER_RIGHT_POSITION.x - MessageBox.LOWER_LEFT_POSITION.x - 10);
-          break;
-        case Verdict.FAIL:
-          this._drawMessageBoxShadow(MessageBox, 10);
-          this._drawMessageBox(MessageBox);
-          this._writeTextOnMessageBox(MessageBox, 'Странно, но в этот раз ты проиграл',
-           MessageBox.LOWER_RIGHT_POSITION.x - MessageBox.LOWER_LEFT_POSITION.x - 10);
-          break;
-        case Verdict.PAUSE:
-          this._drawMessageBoxShadow(MessageBox, 10);
-          this._drawMessageBox(MessageBox);
-          this._writeTextOnMessageBox(MessageBox, 'Игра на паузе, но ты всегда можешь продолжить (нажми пробел)',
-           MessageBox.LOWER_RIGHT_POSITION.x - MessageBox.LOWER_LEFT_POSITION.x - 10);
-          break;
-        case Verdict.INTRO:
-          this._drawMessageBoxShadow(MessageBox, 10);
-          this._drawMessageBox(MessageBox);
-          this._writeTextOnMessageBox(MessageBox, 'Привет. Хоть я и не Супермен,'
-          + ' но тоже могу летать (по нажатию на стрелки).'
-          + ' А еще стреляю огненными шарами',
-           MessageBox.LOWER_RIGHT_POSITION.x - MessageBox.LOWER_LEFT_POSITION.x - 10);
-          break;
-      }
+      var maxLineWidth = MessageBox.LOWER_RIGHT_POSITION.x - MessageBox.LOWER_LEFT_POSITION.x - 10;
+
+      this._drawMessageBoxShadow(MessageBox, 10);
+      this._drawMessageBox(MessageBox);
+      this._writeTextOnMessageBox(MessageBox, textMessage, maxLineWidth);
     },
 
     /**
