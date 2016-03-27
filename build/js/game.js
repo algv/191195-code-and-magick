@@ -409,19 +409,19 @@
        */
       var MessageBox = {
         'LOWER_LEFT_POSITION': {
-          'x': me.x + me.width * 1.1,
+          'x': me.direction & Direction.RIGHT ? me.x + me.width * 1.1 : me.x - WIDTH / 2.5,
           'y': me.y + me.height / 2
         },
         'TOP_LEFT_POSITION': {
-          'x': me.x + me.width + 15,
+          'x': me.direction & Direction.RIGHT ? me.x + me.width + 15 : me.x - WIDTH / 2.5 + 15,
           'y': me.y - HEIGHT / 3
         },
         'TOP_RIGHT_POSITION': {
-          'x': me.x + WIDTH / 2,
+          'x': me.direction & Direction.RIGHT ? me.x + me.width + WIDTH / 2.5 : me.x,
           'y': me.y - HEIGHT / 3
         },
         'LOWER_RIGHT_POSITION': {
-          'x': me.x + WIDTH / 2 - 15,
+          'x': me.direction & Direction.RIGHT ? me.x + me.width + WIDTH / 2.5 - 15 : me.x - 15,
           'y': me.y + me.height / 2
         }
       };
