@@ -54,6 +54,7 @@
       formReviewText.required = true;
       formReviewSubmit.disabled = !(checkNameText() && checkReviewText());
     } else {
+      formReviewText.required = false;
       formReviewSubmit.disabled = !checkNameText();
     }
 
