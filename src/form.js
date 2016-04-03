@@ -29,34 +29,33 @@
    * If review mark < 3, return false.
    */
   function checkRequiredReviewText() {
-    return parseInt(formReviewMark.value, 10) < 3 ? true : false;
+    return parseInt(formReviewMark.value, 10) < 3;
   }
 
   /**
    * Check input text in 'name' fild
    */
   function checkNameText() {
-    return formReviewName.value ? true : false;
+    return formReviewName.validity.valid;
   }
 
   /**
    * Check input text in 'review' fild
    */
   function checkReviewText() {
-    return formReviewText.value ? true : false;
+    if(!formReviewText.required || (formReviewText.required && formReviewText.validity.valid)) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   /**
    * Validation elements of form
    */
   function formElementsValidation() {
-    if(checkRequiredReviewText()) {
-      formReviewText.required = true;
-      formReviewSubmit.disabled = !(checkNameText() && checkReviewText());
-    } else {
-      formReviewText.required = false;
-      formReviewSubmit.disabled = !checkNameText();
-    }
+    formReviewText.required = checkRequiredReviewText();
+    formReviewSubmit.disabled = !(checkNameText() && checkReviewText());
 
     checkReviewFields();
   }
@@ -71,15 +70,13 @@
       fieldsName.classList.remove('invisible');
     }
 
-    if(!formReviewText.required) {
-      fieldsText.classList.add('invisible');
-    } else if(formReviewText.required && checkReviewText()) {
+    if(checkReviewText()) {
       fieldsText.classList.add('invisible');
     } else {
       fieldsText.classList.remove('invisible');
     }
 
-    if(!formReviewSubmit.disabled) {
+    if(checkNameText() && checkReviewText()) {
       formReviewFields.classList.add('invisible');
     } else {
       formReviewFields.classList.remove('invisible');
