@@ -57,31 +57,18 @@
     formReviewText.required = checkRequiredReviewText();
     formReviewSubmit.disabled = !(checkNameText() && checkReviewText());
 
-    checkReviewFields();
+    toggleVisibility(fieldsName, checkNameText());
+    toggleVisibility(fieldsText, checkReviewText());
+    toggleVisibility(formReviewFields, (checkNameText() && checkReviewText()));
   }
 
   /**
-   * Invisible labels if field valid
+   * @param  {Element} field
+   * @param  {Bool} checkField
    */
-  function checkReviewFields() {
-    if(checkNameText()) {
-      fieldsName.classList.add('invisible');
-    } else {
-      fieldsName.classList.remove('invisible');
-    }
-
-    if(checkReviewText()) {
-      fieldsText.classList.add('invisible');
-    } else {
-      fieldsText.classList.remove('invisible');
-    }
-
-    if(checkNameText() && checkReviewText()) {
-      formReviewFields.classList.add('invisible');
-    } else {
-      formReviewFields.classList.remove('invisible');
-    }
-  }
+  var toggleVisibility = function(field, checkField) {
+    field.classList[(checkField) ? 'add' : 'remove']('invisible');
+  };
 
   for(var i = 0; i < formReviewMark.length; i++) {
     formReviewMark[i].onclick = function() {
