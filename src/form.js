@@ -1,5 +1,7 @@
 'use strict';
 
+var browserCookies = require('browser-cookies');
+
 (function() {
   var formContainer = document.querySelector('.overlay-container');
   var formOpenButton = document.querySelector('.reviews-controls-new');
@@ -17,12 +19,53 @@
 
   formOpenButton.onclick = function(evt) {
     evt.preventDefault();
+    readFromCookies();
+    formElementsValidation();
     formContainer.classList.remove('invisible');
   };
 
   formCloseButton.onclick = function(evt) {
     evt.preventDefault();
     formContainer.classList.add('invisible');
+  };
+
+  /**
+   * Save 'name' and 'mark' to cookies
+   */
+  function saveToCookies() {
+    var dateCurent = new Date();
+    var dateBirth = new Date(dateCurent.getFullYear(), 4, 12);
+    var dateExpiresCookies;
+
+    if(dateBirth < dateCurent) {
+      dateExpiresCookies = Math.floor((dateCurent - dateBirth) / 24 / 60 / 60 / 1000);
+    } else {
+      dateBirth.setFullYear(dateBirth.getFullYear() - 1);
+      dateExpiresCookies = Math.floor((dateCurent - dateBirth) / 24 / 60 / 60 / 1000);
+    }
+
+    browserCookies.set('mark', formReviewMark.value, {expires: dateExpiresCookies});
+    browserCookies.set('name', formReviewName.value, {expires: dateExpiresCookies});
+  }
+
+  /**
+   * Read 'name' and 'mark' from cookies and past in fields
+   */
+  function readFromCookies() {
+    formReviewMark.value = browserCookies.get('mark') || '';
+    formReviewName.value = browserCookies.get('name') || '';
+  }
+
+  /**
+   * Save to cookies on submit form
+   * @param  {Event} evt
+   */
+  formReview.onsubmit = function(evt) {
+    evt.preventDefault();
+
+    saveToCookies();
+
+    this.submit();
   };
 
   /**
