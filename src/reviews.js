@@ -33,6 +33,26 @@
     var reviewCloned = elementToClone.cloneNode(true);
     var reviewImage = reviewCloned.querySelector('.review-author');
 
+    var rating = reviewCloned.querySelector('.review-rating');
+    rating.classList.add('review-rating' + reviewData.rating);
+
+    switch (reviewData.rating) {
+      case 2:
+        rating.classList.add('review-rating-two');
+        break;
+      case 3:
+        rating.classList.add('review-rating-three');
+        break;
+      case 4:
+        rating.classList.add('review-rating-four');
+        break;
+      case 5:
+        rating.classList.add('review-rating-five');
+        break;
+      default:
+        break;
+    }
+
     reviewCloned.querySelector('.review-text').textContent = reviewData.description;
     reviewImage.title = reviewData.author.name;
     reviewImage.alt = reviewData.author.name;
