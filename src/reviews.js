@@ -195,8 +195,8 @@
     reviews = loadedReviews;
     setFiltrationEnabled();
     setFilter(DEFAULT_FILTER);
-  });
 
-  toggleVisibility(reviewsFilter, true);
-  toggleVisibility(reviewsSection, true);
+    toggleVisibility(reviewsFilter, true);
+    toggleVisibility(reviewsSection, true);
+  });
 })();
