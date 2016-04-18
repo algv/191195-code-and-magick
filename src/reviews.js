@@ -55,23 +55,11 @@
     var reviewImage = reviewCloned.querySelector('.review-author');
 
     var rating = reviewCloned.querySelector('.review-rating');
-    rating.classList.add('review-rating' + reviewData.rating);
+    var ratingClasses = ['review-rating', 'review-rating-two', 'review-rating-three',
+                         'review-rating-four', 'review-rating-five'];
 
-    switch (reviewData.rating) {
-      case 2:
-        rating.classList.add('review-rating-two');
-        break;
-      case 3:
-        rating.classList.add('review-rating-three');
-        break;
-      case 4:
-        rating.classList.add('review-rating-four');
-        break;
-      case 5:
-        rating.classList.add('review-rating-five');
-        break;
-      default:
-        break;
+    if(reviewData.rating >= 2) {
+      rating.classList.add(ratingClasses[reviewData.rating - 1]);
     }
 
     reviewCloned.querySelector('.review-text').textContent = reviewData.description;
@@ -79,14 +67,12 @@
     reviewImage.alt = reviewData.author.name;
 
     var avatarLoadTimeout;
-    var avatarReviewer = new Image();
+    var avatarReviewer = new Image(124, 124);
 
     avatarReviewer.onload = function(evt) {
       clearTimeout(avatarLoadTimeout);
 
       reviewImage.src = evt.target.src;
-      reviewImage.width = 124;
-      reviewImage.height = 124;
     };
 
     avatarReviewer.onerror = function() {
@@ -205,9 +191,6 @@
   toggleVisibility(reviewsFilter, false);
   toggleVisibility(reviewsSection, false);
 
-  /**
-   * @param  {function} callback
-   */
   getReviews(function(loadedReviews) {
     reviews = loadedReviews;
     setFiltrationEnabled();
