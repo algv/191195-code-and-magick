@@ -222,7 +222,7 @@
   function setFiltrationEnabled() {
     reviewsFilter.addEventListener('click', function(evt) {
       if (evt.target.classList.contains('reviews-filter-item')) {
-        setFilter(evt.target.id);
+        setFilter(evt.target.getAttribute('for'));
       }
     });
   }
