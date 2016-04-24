@@ -791,6 +791,8 @@
 
   var cloudBlock = document.querySelector('.header-clouds');
   var gameBlock = document.querySelector('.demo');
+  var cloudIsVisible = true;
+  var cloudFirstPosition = cloudBlock.style.backgroundPosition;
 
   /**
    * @param  {HTMLElement} element
@@ -806,13 +808,22 @@
     game.setGameStatus(Game.Verdict.PAUSE);
   }
 
-  function moveClouds() {
-    var footerPosition = cloudBlock.getBoundingClientRect();
-    cloudBlock.style.backgroundPosition = (footerPosition.top * 0.3) + 'px';
+  /**
+   * @param  {boolean} visible
+   */
+  function moveClouds(visible) {
+    if(visible) {
+      var footerPosition = cloudBlock.getBoundingClientRect();
+      cloudBlock.style.backgroundPosition = (footerPosition.top * 0.3) + 'px';
+    } else {
+      cloudBlock.style.backgroundPosition = cloudFirstPosition;
+    }
   }
 
   function setScrollEnabled() {
     var scrollTimeout;
+
+    moveClouds(cloudIsVisible);
 
     clearTimeout(scrollTimeout);
 
@@ -821,9 +832,7 @@
         setGamePause();
       }
 
-      if(checkVisibilty(cloudBlock)) {
-        moveClouds();
-      }
+      cloudIsVisible = checkVisibilty(cloudBlock);
     }, 100);
   }
 
