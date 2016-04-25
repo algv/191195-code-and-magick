@@ -1,6 +1,8 @@
 'use strict';
 
 (function() {
+  var utils = require('./utils');
+
   /**
    * @const
    * @type {number}
@@ -795,13 +797,6 @@
   var cloudFirstPosition = cloudBlock.style.backgroundPosition;
 
   /**
-   * @param  {HTMLElement} element
-   */
-  function checkVisibilty(element) {
-    return element.getBoundingClientRect().bottom > 0;
-  }
-
-  /**
    *  set game pause
    */
   function setGamePause() {
@@ -828,11 +823,11 @@
     clearTimeout(scrollTimeout);
 
     scrollTimeout = setTimeout(function() {
-      if(!checkVisibilty(gameBlock)) {
+      if(!utils.checkVisibilty(gameBlock)) {
         setGamePause();
       }
 
-      cloudIsVisible = checkVisibilty(cloudBlock);
+      cloudIsVisible = utils.checkVisibilty(cloudBlock);
     }, 100);
   }
 
