@@ -1,6 +1,7 @@
 'use strict';
 
 var browserCookies = require('browser-cookies');
+var utils = require('./utils');
 
 (function() {
   var formContainer = document.querySelector('.overlay-container');
@@ -100,18 +101,10 @@ var browserCookies = require('browser-cookies');
     formReviewText.required = checkRequiredReviewText();
     formReviewSubmit.disabled = !(checkNameText() && checkReviewText());
 
-    toggleVisibility(fieldsName, checkNameText());
-    toggleVisibility(fieldsText, checkReviewText());
-    toggleVisibility(formReviewFields, (checkNameText() && checkReviewText()));
+    utils.toggleVisibility(fieldsName, !checkNameText());
+    utils.toggleVisibility(fieldsText, !checkReviewText());
+    utils.toggleVisibility(formReviewFields, (checkNameText() && checkReviewText()));
   }
-
-  /**
-   * @param  {Element} field
-   * @param  {Bool} checkField
-   */
-  var toggleVisibility = function(field, checkField) {
-    field.classList[(checkField) ? 'add' : 'remove']('invisible');
-  };
 
   for(var i = 0; i < formReviewMark.length; i++) {
     formReviewMark[i].onclick = function() {
