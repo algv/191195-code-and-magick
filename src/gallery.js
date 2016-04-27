@@ -13,20 +13,19 @@ var previewNumber = gallery.querySelector('.preview-number-current');
 var previewTotal = gallery.querySelector('.preview-number-total');
 
 var pictures = [];
-var activePicture;
 var activePictureNumber = 0;
+var selfGalleryNodesLength = galleryPreview.childNodes.length;
 
 /**
- * @param  {Array.Objects} arrayOfPictures
  */
-function savePictures(arrayOfPictures) {
-  Array.prototype.slice.call(arrayOfPictures).forEach(function(picture, key) {
-    pictures.push(picture.src);
-    arrayOfPictures[key].dataset.number = key;
-  });
+function savePictures(picturesSRC) {
+  for(var i = 0; i < picturesSRC.length; i++) {
+    var tmpImage = new Image();
+    tmpImage.src = picturesSRC[i];
+    pictures.push(tmpImage);
+  }
 
   previewTotal.textContent = pictures.length;
-  activePicture = galleryPreview.appendChild(new Image());
 }
 
 /**
@@ -45,12 +44,18 @@ function showGallery(key) {
 }
 
 function showPicture(id) {
+  if(galleryPreview.childNodes.length !== selfGalleryNodesLength) {
+    for(var i = selfGalleryNodesLength; i < galleryPreview.childNodes.length; i++) {
+      galleryPreview.removeChild(galleryPreview.childNodes[i]);
+    }
+  }
 
-  activePicture.src = pictures[id];
+  galleryPreview.appendChild(pictures[id]);
 
   utils.toggleVisibility(buttonPreview, id > 0);
   utils.toggleVisibility(buttonNext, id < pictures.length - 1);
 
+  activePictureNumber = id;
   previewNumber.textContent = parseInt(id, 10) + 1;
 }
 

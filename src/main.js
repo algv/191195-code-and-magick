@@ -5,11 +5,17 @@ require('./game');
 require('./review/review');
 
 var gallery = require('./gallery');
+var picturesSRC = [];
 
 var photoContainer = document.querySelector('.photogallery');
 var arrayOfPictures = document.querySelectorAll('.photogallery-image > img');
 
-gallery.savePictures(arrayOfPictures);
+Array.prototype.slice.call(arrayOfPictures).forEach(function(picture, key) {
+  picturesSRC.push(picture.src);
+  arrayOfPictures[key].dataset.number = key;
+});
+
+gallery.savePictures(picturesSRC);
 
 photoContainer.addEventListener('click', function(evt) {
   evt.preventDefault();
