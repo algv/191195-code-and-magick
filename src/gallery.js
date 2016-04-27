@@ -17,6 +17,7 @@ var activePictureNumber = 0;
 var selfGalleryNodesLength = galleryPreview.childNodes.length;
 
 /**
+ * @param  {Array.string} picturesSRC
  */
 function savePictures(picturesSRC) {
   for(var i = 0; i < picturesSRC.length; i++) {
