@@ -53,6 +53,8 @@ function createReviewElement(reviewData, container) {
   }, IMAGE_LOAD_TIMEOUT);
 
   container.appendChild(reviewCloned);
+
+  return reviewCloned;
 }
 
 module.exports = createReviewElement;

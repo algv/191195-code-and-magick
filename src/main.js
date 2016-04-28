@@ -2,6 +2,7 @@
 
 require('./form');
 require('./game');
+
 require('./review/review');
 
 var gallery = require('./gallery');
@@ -25,3 +26,5 @@ photoContainer.addEventListener('click', function(evt) {
     gallery.showGallery(activePictureNumber);
   }
 });
+
+require('./review_render');
