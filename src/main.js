@@ -2,8 +2,8 @@
 
 require('./form');
 require('./game');
-
 require('./review/review');
+require('./review_render');
 
 var gallery = require('./gallery');
 var picturesSRC = [];
@@ -27,4 +27,4 @@ photoContainer.addEventListener('click', function(evt) {
   }
 });
 
-require('./review_render');
+

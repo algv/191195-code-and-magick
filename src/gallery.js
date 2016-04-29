@@ -2,110 +2,113 @@
 
 var utils = require('./utils');
 
-var gallery = document.querySelector('.overlay-gallery');
-var galleryPreview = document.querySelector('.overlay-gallery-preview');
+/** @constructor */
+function Gallery() {
+  var self = this;
 
-var buttonCloseGallery = gallery.querySelector('.overlay-gallery-close');
-var buttonPreview = gallery.querySelector('.overlay-gallery-control-left');
-var buttonNext = gallery.querySelector('.overlay-gallery-control-right');
+  this.element = document.querySelector('.overlay-gallery');
 
-var previewNumber = gallery.querySelector('.preview-number-current');
-var previewTotal = gallery.querySelector('.preview-number-total');
+  this.galleryPreview = this.element.querySelector('.overlay-gallery-preview');
 
-var pictures = [];
-var activePictureNumber = 0;
-var selfGalleryNodesLength = galleryPreview.childNodes.length;
+  var buttonCloseGallery = this.element.querySelector('.overlay-gallery-close');
+  var buttonPreview = this.element.querySelector('.overlay-gallery-control-left');
+  var buttonNext = this.element.querySelector('.overlay-gallery-control-right');
 
-/**
+  var previewNumber = this.element.querySelector('.preview-number-current');
+  var previewTotal = this.element.querySelector('.preview-number-total');
+
+  this.pictures = [];
+  this.activePictureNumber = 0;
+
+  /**
  * @param  {Array.string} picturesSRC
  */
-function savePictures(picturesSRC) {
-  for(var i = 0; i < picturesSRC.length; i++) {
-    var tmpImage = new Image();
-    tmpImage.src = picturesSRC[i];
-    pictures.push(tmpImage);
-  }
+  this.savePictures = function(picturesSRC) {
+    for(var i = 0; i < picturesSRC.length; i++) {
+      var tmpImage = new Image();
+      tmpImage.src = picturesSRC[i];
+      self.pictures.push(tmpImage);
+    }
 
-  previewTotal.textContent = pictures.length;
-}
+    previewTotal.textContent = self.pictures.length;
+  };
 
-/**
+  /**
  * @param  {number} key
  */
-function showGallery(key) {
-  utils.toggleVisibility(gallery, true);
+  this.showGallery = function(key) {
+    utils.toggleVisibility(self.element, true);
 
-  document.addEventListener('keydown', _onDocumentKeydownHandler);
-  buttonCloseGallery.addEventListener('click', _onCloseClickHandler);
-  buttonCloseGallery.addEventListener('keydown', _onCloseKeydownHandler);
-  buttonNext.addEventListener('click', _showNextPicture);
-  buttonPreview.addEventListener('click', _showPreviewPicture);
+    document.addEventListener('keydown', self._onDocumentKeydownHandler);
+    buttonCloseGallery.addEventListener('click', self._onCloseClickHandler);
+    buttonCloseGallery.addEventListener('keydown', self._onCloseKeydownHandler);
+    buttonNext.addEventListener('click', self._showNextPicture);
+    buttonPreview.addEventListener('click', self._showPreviousPicture);
 
-  showPicture(key);
-}
+    self.showPicture(key);
+  };
 
-function showPicture(id) {
-  if(galleryPreview.childNodes.length !== selfGalleryNodesLength) {
-    for(var i = selfGalleryNodesLength; i < galleryPreview.childNodes.length; i++) {
-      galleryPreview.removeChild(galleryPreview.childNodes[i]);
+  this.showPicture = function(id) {
+    var tmpSelectorImage = self.galleryPreview.querySelector('img');
+    if(tmpSelectorImage) {
+      self.galleryPreview.replaceChild(self.pictures[id], tmpSelectorImage);
+    } else {
+      self.galleryPreview.appendChild(self.pictures[id]);
     }
-  }
 
-  galleryPreview.appendChild(pictures[id]);
+    utils.toggleVisibility(buttonPreview, id > 0);
+    utils.toggleVisibility(buttonNext, id < self.pictures.length - 1);
 
-  utils.toggleVisibility(buttonPreview, id > 0);
-  utils.toggleVisibility(buttonNext, id < pictures.length - 1);
+    self.activePictureNumber = id;
+    previewNumber.textContent = parseInt(id, 10) + 1;
+  };
 
-  activePictureNumber = id;
-  previewNumber.textContent = parseInt(id, 10) + 1;
-}
+  this._showNextPicture = function() {
+    if (self.activePictureNumber < self.pictures.length - 1) {
+      self.activePictureNumber++;
+      self.showPicture(self.activePictureNumber);
+    }
+  };
 
-function _showNextPicture() {
-  if (activePictureNumber < pictures.length - 1) {
-    activePictureNumber++;
-    showPicture(activePictureNumber);
-  }
-}
+  this. _showPreviousPicture = function() {
+    if (self.activePictureNumber > 0) {
+      self.activePictureNumber--;
+      self.showPicture(self.activePictureNumber);
+    }
+  };
 
-function _showPreviewPicture() {
-  if (activePictureNumber > 0) {
-    activePictureNumber--;
-    showPicture(activePictureNumber);
-  }
-}
+  this._onCloseClickHandler = function() {
+    self.hideGallery();
+  };
 
-
-function _onCloseClickHandler() {
-  hideGallery();
-}
-
-/**
+  /**
  * @param {KeyboardEvent} evt
  */
-function _onCloseKeydownHandler(evt) {
-  if (utils.isDeactivationEvent(evt)) {
-    evt.preventDefault();
-    hideGallery();
-  }
-}
+  this._onCloseKeydownHandler = function(evt) {
+    if (utils.isDeactivationEvent(evt)) {
+      evt.preventDefault();
+      self.hideGallery();
+    }
+  };
 
-/**
+  /**
  * @param {KeyboardEvent} evt
  */
-function _onDocumentKeydownHandler(evt) {
-  if (utils.isDeactivationEvent(evt)) {
-    evt.preventDefault();
-    hideGallery();
-  }
+  this._onDocumentKeydownHandler = function(evt) {
+    if (utils.isDeactivationEvent(evt)) {
+      evt.preventDefault();
+      self.hideGallery();
+    }
+  };
+
+  this.hideGallery = function() {
+    utils.toggleVisibility(self.element, false);
+
+    document.removeEventListener('keydown', self._onDocumentKeydownHandler);
+    buttonCloseGallery.removeEventListener('click', self._onCloseClickHandler);
+    buttonCloseGallery.removeEventListener('keydown', self._onCloseKeydownHandler);
+  };
 }
 
-function hideGallery() {
-  utils.toggleVisibility(gallery, false);
+module.exports = new Gallery();
 
-  document.removeEventListener('keydown', _onDocumentKeydownHandler);
-  buttonCloseGallery.removeEventListener('click', _onCloseClickHandler);
-  buttonCloseGallery.removeEventListener('keydown', _onCloseKeydownHandler);
-}
-
-module.exports.savePictures = savePictures;
-module.exports.showGallery = showGallery;
