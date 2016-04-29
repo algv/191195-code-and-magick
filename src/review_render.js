@@ -31,9 +31,10 @@ var renderedReviews = [];
 /** @type {Array.<Object>} */
 var filteredReviews = [];
 
+var storageFilter = localStorage.getItem('filterType');
 
 /** @constant {Filter} */
-var DEFAULT_FILTER = FilterType.ALL;
+var DEFAULT_FILTER = storageFilter || FilterType.ALL;
 
 /** @constant {number} */
 var REVIEW_LOAD_TIMEOUT = 10000;
@@ -110,6 +111,7 @@ function setFilter(filterType) {
   filteredReviews = filter(reviews, filterType);
   pageNumber = 0;
   renderReviews(filteredReviews, pageNumber, true);
+  localStorage.setItem('filterType', filterType);
 }
 
 function setFiltrationEnabled() {
@@ -120,6 +122,29 @@ function setFiltrationEnabled() {
   });
 }
 
+/**
+ * @param  {FilterType} filterForCheck
+ */
+function getKeyForFilter(filterForCheck) {
+  var filters = [];
+  var id = 0;
+
+  for(var i in FilterType) {
+    if(FilterType.hasOwnProperty(i)) {
+      filters.push(FilterType[i]);
+    }
+  }
+
+  for(i = 0; i < filters.length; i++) {
+    if (filters[i] === filterForCheck) {
+      id = i;
+      break;
+    }
+  }
+
+  return id;
+}
+
 utils.toggleVisibility(reviewsFilter, false);
 utils.toggleVisibility(reviewsSection, false);
 
@@ -127,6 +152,7 @@ getReviews(function(loadedReviews) {
   reviews = loadedReviews;
   setFiltrationEnabled();
   setFilter(DEFAULT_FILTER);
+  reviewsFilter[getKeyForFilter(DEFAULT_FILTER)].checked = true;
   moreReviews.addEventListener('click', renderNextPages);
 
   utils.toggleVisibility(reviewsFilter, true);
