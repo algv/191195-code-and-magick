@@ -103,7 +103,7 @@ var utils = require('./utils');
 
     utils.toggleVisibility(fieldsName, !checkNameText());
     utils.toggleVisibility(fieldsText, !checkReviewText());
-    utils.toggleVisibility(formReviewFields, (checkNameText() && checkReviewText()));
+    utils.toggleVisibility(formReviewFields, !(checkNameText() && checkReviewText()));
   }
 
   for(var i = 0; i < formReviewMark.length; i++) {
