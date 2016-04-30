@@ -18,6 +18,11 @@ Array.prototype.slice.call(arrayOfPictures).forEach(function(picture, key) {
 
 gallery.savePictures(picturesSRC);
 
+var tmpUrlFromHash = gallery.checkUrlForHashPhoto();
+if(tmpUrlFromHash.length > 0) {
+  gallery.showGallery(tmpUrlFromHash);
+}
+
 photoContainer.addEventListener('click', function(evt) {
   evt.preventDefault();
 
