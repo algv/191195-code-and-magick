@@ -50,6 +50,12 @@ module.exports = {
    */
   isDeactivationEvent: function(evt) {
     return evt.keyCode === KeyCode.ESC;
+  },
+
+  inherit: function(recepient, donor) {
+    function EmptyCtor() {}
+    EmptyCtor.prototype = donor.prototype;
+    recepient.prototype = new EmptyCtor();
   }
 };
 
