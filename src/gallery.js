@@ -5,8 +5,9 @@ var utils = require('./utils');
 /** @constructor */
 function Gallery() {
   var self = this;
+  var originURL = window.location.origin;
 
-  this.hashPhoto = '#photo/';
+  this.hashPhoto = '#photo';
   this.regularExpressions = /#photo\/(\S+)/;
 
   this.createHash = function(url) {
@@ -26,15 +27,7 @@ function Gallery() {
   };
 
   this.getKeyForSrcPictures = function(src) {
-    var key;
-    for (var i = 0; i < self.pictures.length; i++) {
-      if (self.pictures[i].src === src) {
-        key = i;
-        break;
-      }
-    }
-
-    return key;
+    return self.pathesToPictures.indexOf(src);
   };
 
   this.element = document.querySelector('.overlay-gallery');
@@ -49,6 +42,7 @@ function Gallery() {
   var previewTotal = this.element.querySelector('.preview-number-total');
 
   this.pictures = [];
+  this.pathesToPictures = [];
   this.activePictureNumber = 0;
 
   /**
@@ -58,6 +52,8 @@ function Gallery() {
     for(var i = 0; i < picturesSRC.length; i++) {
       var tmpImage = new Image();
       tmpImage.src = picturesSRC[i];
+
+      self.pathesToPictures.push(picturesSRC[i].substring(originURL.length, picturesSRC[i].length));
       self.pictures.push(tmpImage);
     }
 
@@ -77,7 +73,7 @@ function Gallery() {
     buttonPreview.addEventListener('click', self._showPreviousPicture);
 
     if (!isNaN(parseFloat(key)) && isFinite(key)) {
-      location.hash = self.createHash(self.pictures[key].src);
+      location.hash = self.createHash(self.pathesToPictures[key]);
     } else {
       self.showPicture(key);
     }
@@ -107,14 +103,14 @@ function Gallery() {
   this._showNextPicture = function() {
     if (self.activePictureNumber < self.pictures.length - 1) {
       self.activePictureNumber++;
-      location.hash = self.createHash(self.pictures[self.activePictureNumber].src);
+      location.hash = self.createHash(self.pathesToPictures[self.activePictureNumber]);
     }
   };
 
   this. _showPreviousPicture = function() {
     if (self.activePictureNumber > 0) {
       self.activePictureNumber--;
-      location.hash = self.createHash(self.pictures[self.activePictureNumber].src);
+      location.hash = self.createHash(self.pathesToPictures[self.activePictureNumber]);
     }
   };
 
