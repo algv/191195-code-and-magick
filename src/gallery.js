@@ -5,6 +5,30 @@ var utils = require('./utils');
 /** @constructor */
 function Gallery() {
   var self = this;
+  var originURL = window.location.origin;
+
+  this.hashPhoto = '#photo';
+  this.regularExpressions = /#photo\/(\S+)/;
+
+  this.createHash = function(url) {
+    return this.hashPhoto + url;
+  };
+
+  this.getUrlFromHash = function(hash) {
+    return hash.slice(self.hashPhoto.length);
+  };
+
+  this.checkUrlForHashPhoto = function() {
+    var outURL = '';
+    if (location.hash.match(self.regularExpressions)) {
+      outURL = self.getUrlFromHash(location.hash);
+    }
+    return outURL;
+  };
+
+  this.getKeyForSrcPictures = function(src) {
+    return self.pathesToPictures.indexOf(src);
+  };
 
   this.element = document.querySelector('.overlay-gallery');
 
@@ -18,6 +42,7 @@ function Gallery() {
   var previewTotal = this.element.querySelector('.preview-number-total');
 
   this.pictures = [];
+  this.pathesToPictures = [];
   this.activePictureNumber = 0;
 
   /**
@@ -27,6 +52,8 @@ function Gallery() {
     for(var i = 0; i < picturesSRC.length; i++) {
       var tmpImage = new Image();
       tmpImage.src = picturesSRC[i];
+
+      self.pathesToPictures.push(picturesSRC[i].substring(originURL.length, picturesSRC[i].length));
       self.pictures.push(tmpImage);
     }
 
@@ -45,35 +72,45 @@ function Gallery() {
     buttonNext.addEventListener('click', self._showNextPicture);
     buttonPreview.addEventListener('click', self._showPreviousPicture);
 
-    self.showPicture(key);
+    if (!isNaN(parseFloat(key)) && isFinite(key)) {
+      location.hash = self.createHash(self.pathesToPictures[key]);
+    } else {
+      self.showPicture(key);
+    }
   };
 
   this.showPicture = function(id) {
-    var tmpSelectorImage = self.galleryPreview.querySelector('img');
-    if(tmpSelectorImage) {
-      self.galleryPreview.replaceChild(self.pictures[id], tmpSelectorImage);
-    } else {
-      self.galleryPreview.appendChild(self.pictures[id]);
+    var key = id;
+
+    if (typeof id === 'string') {
+      key = self.getKeyForSrcPictures(id);
     }
 
-    utils.toggleVisibility(buttonPreview, id > 0);
-    utils.toggleVisibility(buttonNext, id < self.pictures.length - 1);
+    var tmpSelectorImage = self.galleryPreview.querySelector('img');
+    if(tmpSelectorImage) {
+      self.galleryPreview.replaceChild(self.pictures[key], tmpSelectorImage);
+    } else {
+      self.galleryPreview.appendChild(self.pictures[key]);
+    }
 
-    self.activePictureNumber = id;
-    previewNumber.textContent = parseInt(id, 10) + 1;
+    utils.toggleVisibility(buttonPreview, key > 0);
+    utils.toggleVisibility(buttonNext, key < self.pictures.length - 1);
+
+    self.activePictureNumber = key;
+    previewNumber.textContent = parseInt(key, 10) + 1;
   };
 
   this._showNextPicture = function() {
     if (self.activePictureNumber < self.pictures.length - 1) {
       self.activePictureNumber++;
-      self.showPicture(self.activePictureNumber);
+      location.hash = self.createHash(self.pathesToPictures[self.activePictureNumber]);
     }
   };
 
   this. _showPreviousPicture = function() {
     if (self.activePictureNumber > 0) {
       self.activePictureNumber--;
-      self.showPicture(self.activePictureNumber);
+      location.hash = self.createHash(self.pathesToPictures[self.activePictureNumber]);
     }
   };
 
@@ -101,14 +138,28 @@ function Gallery() {
     }
   };
 
+  this._onHashChange = function() {
+    self.restoreFromHash();
+  };
+
+  this.restoreFromHash = function() {
+    if (location.hash.match(self.regularExpressions)) {
+      self.showPicture(self.getUrlFromHash(location.hash));
+    } else {
+      self.hideGallery();
+    }
+  };
+
   this.hideGallery = function() {
+    location.hash = '';
     utils.toggleVisibility(self.element, false);
 
     document.removeEventListener('keydown', self._onDocumentKeydownHandler);
     buttonCloseGallery.removeEventListener('click', self._onCloseClickHandler);
     buttonCloseGallery.removeEventListener('keydown', self._onCloseKeydownHandler);
   };
+
+  window.addEventListener('hashchange', this._onHashChange);
 }
 
 module.exports = new Gallery();
-

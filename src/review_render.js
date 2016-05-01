@@ -9,6 +9,7 @@ var reviewsFilter = document.querySelector('.reviews-filter');
 var reviewsList = document.querySelector('.reviews-list');
 var reviewsSection = document.querySelector('.reviews');
 var moreReviews = reviewsSection.querySelector('.reviews-controls-more');
+var reviewsRadioGroup = reviewsFilter.elements['reviews'];
 
 /*
  * Reviews on page
@@ -122,29 +123,6 @@ function setFiltrationEnabled() {
   });
 }
 
-/**
- * @param  {FilterType} filterForCheck
- */
-function getKeyForFilter(filterForCheck) {
-  var filters = [];
-  var id = 0;
-
-  for(var i in FilterType) {
-    if(FilterType.hasOwnProperty(i)) {
-      filters.push(FilterType[i]);
-    }
-  }
-
-  for(i = 0; i < filters.length; i++) {
-    if (filters[i] === filterForCheck) {
-      id = i;
-      break;
-    }
-  }
-
-  return id;
-}
-
 utils.toggleVisibility(reviewsFilter, false);
 utils.toggleVisibility(reviewsSection, false);
 
@@ -152,7 +130,7 @@ getReviews(function(loadedReviews) {
   reviews = loadedReviews;
   setFiltrationEnabled();
   setFilter(DEFAULT_FILTER);
-  reviewsFilter[getKeyForFilter(DEFAULT_FILTER)].checked = true;
+  reviewsRadioGroup.value = DEFAULT_FILTER;
   moreReviews.addEventListener('click', renderNextPages);
 
   utils.toggleVisibility(reviewsFilter, true);
