@@ -430,8 +430,6 @@
 
       var maxLineWidth = MessageBox.LOWER_RIGHT_POSITION.x - MessageBox.LOWER_LEFT_POSITION.x - 10;
 
-      this._drawMessageBoxShadow(MessageBox, 10);
-      this._drawMessageBox(MessageBox);
       this._writeTextOnMessageBox(MessageBox, textMessage, maxLineWidth);
     },
 
@@ -471,14 +469,9 @@
       var arrayOfStrings = textMessage.split(' ');
       var oneLine = '';
       var arrayOfLines = [];
-      var curentTextPosition = {
-        'x': MessageBox.TOP_LEFT_POSITION.x + textHeight,
-        'y': MessageBox.TOP_LEFT_POSITION.y + textHeight * 2
-      };
 
       this.ctx.font = '16px PT Mono';
       this.ctx.baseLine = 'hanging';
-      this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
 
       for(var i = 0; i < arrayOfStrings.length; i++) {
         var tempLine = '';
@@ -492,6 +485,22 @@
         }
       }
       arrayOfLines.push(oneLine);
+
+      var heightForAllLines = arrayOfLines.length * textHeight;
+      while ((MessageBox.LOWER_LEFT_POSITION.y - MessageBox.TOP_LEFT_POSITION.y) < (heightForAllLines + textHeight)) {
+        MessageBox.TOP_LEFT_POSITION.y = MessageBox.TOP_LEFT_POSITION.y - textHeight;
+        MessageBox.TOP_RIGHT_POSITION.y = MessageBox.TOP_RIGHT_POSITION.y - textHeight;
+      }
+
+      var curentTextPosition = {
+        'x': MessageBox.TOP_LEFT_POSITION.x + textHeight,
+        'y': MessageBox.TOP_LEFT_POSITION.y + textHeight * 2
+      };
+
+      this._drawMessageBoxShadow(MessageBox, 10);
+      this._drawMessageBox(MessageBox);
+
+      this.ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
 
       for(i = 0; i < arrayOfLines.length; i++) {
         this.ctx.fillText(arrayOfLines[i], curentTextPosition.x,
