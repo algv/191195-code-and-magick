@@ -13,14 +13,10 @@ function Review(data, container) {
   this.quizAnswer = 'review-quiz-answer';
   this.quizAnswerActive = 'review-quiz-answer-active';
 
-  this.data = data;
-  this.element = getReviewElement(this.data, container);
+  BaseComponent.call(this, data, getReviewElement(data, container));
 
   this.clickOnQuizAnswer = this.clickOnQuizAnswer.bind(this);
   this.remove = this.remove.bind(this);
-  this.element.addEventListener('click', this.clickOnQuizAnswer);
-
-  container.appendChild(this.element);
 }
 
 utils.inherit(Review, BaseComponent);
@@ -29,6 +25,11 @@ Review.prototype.clickOnQuizAnswer = function(evt) {
   if (evt.target.classList.contains(this.quizAnswer)) {
     evt.target.classList.add(this.quizAnswerActive);
   }
+};
+
+Review.prototype.create = function() {
+  this.element.addEventListener('click', this.clickOnQuizAnswer);
+  BaseComponent.prototype.create.call(this);
 };
 
 Review.prototype.remove = function() {

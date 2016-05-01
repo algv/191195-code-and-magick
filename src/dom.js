@@ -1,8 +1,8 @@
 'use strict';
 
-function BaseComponent(data, container) {
-  this.element = data;
-  this.container = container;
+function BaseComponent(data, element) {
+  this.data = data;
+  this.element = element;
 }
 
 BaseComponent.prototype.create = function() {
